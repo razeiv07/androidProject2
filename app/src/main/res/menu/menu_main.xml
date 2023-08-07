@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_google_maps"
+        android:title="Google Maps"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/action_google_places"
+        android:title="Google Places"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/action_email"
+        android:title="Email"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/action_about"
+        android:title="About"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+</menu>
