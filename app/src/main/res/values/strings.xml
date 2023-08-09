@@ -9,4 +9,6 @@
     <string name="contributors">Contributors</string>
     <string name="description">This, Android Application, is designed to share your present location with others. It enables you to discover nearby places bases on your current geographical position.
         Whether you are ensuring safety, coordinating plans, or simply engaging in exploration, this app empowers you with the ability to establish real-time connections and enrich your understanding of your surroundings.</string>
+    <string name="email">Email</string>
+    <string name="email_button">Send Email</string>
 </resources>

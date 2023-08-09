@@ -1,10 +1,18 @@
 package com.fanshawe.project2
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.text.TextUtils
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,6 +29,9 @@ class EmailFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var etEmail: TextInputEditText
+    private lateinit var btnEmail: MaterialButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -33,10 +44,52 @@ class EmailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val view = inflater.inflate(R.layout.fragment_email, container, false)
+        etEmail = view.findViewById(R.id.etEmail)
+        btnEmail = view.findViewById(R.id.btnEmail)
+
+        btnEmail.setOnClickListener {
+            sendEmail()
+        }
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_email, container, false)
+        return view
     }
 
+
+    private fun sendEmail() {
+        val email = etEmail.text.toString().trim()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+
+        val savedLatitudeString = sharedPreferences.getString("latitude", null)
+        val savedLongitudeString = sharedPreferences.getString("longitude", null)
+        val savedAddress = sharedPreferences.getString("address", null)
+
+        if (isValidEmail(email)) {
+
+
+            val uriText = "mailto:$email" +
+                    "?subject=" + "$savedLatitudeString,$savedLongitudeString" +
+                    "&body=" + "address name: $savedAddress"
+            val uri = Uri.parse(uriText)
+            val mailIntent = Intent(Intent.ACTION_SENDTO)
+            mailIntent.data = uri
+            startActivity(
+                Intent.createChooser(mailIntent, "Send Email").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Please enter a valid email address.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun isValidEmail(target: String): Boolean {
+        return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches()
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -53,6 +106,8 @@ class EmailFragment : Fragment() {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
+
+
                 }
             }
     }

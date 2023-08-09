@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/map"
                     android:layout_gravity="center_horizontal"
-                    android:scaleType="center"
+                    android:scaleType="fitCenter"
                     android:layout_marginTop="65dp"
                     android:layout_marginBottom="30dp" />
 
