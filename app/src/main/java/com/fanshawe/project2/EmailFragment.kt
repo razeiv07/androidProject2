@@ -1,6 +1,7 @@
 package com.fanshawe.project2
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -31,6 +32,7 @@ class EmailFragment : Fragment() {
 
     private lateinit var etEmail: TextInputEditText
     private lateinit var btnEmail: MaterialButton
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +49,10 @@ class EmailFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_email, container, false)
         etEmail = view.findViewById(R.id.etEmail)
         btnEmail = view.findViewById(R.id.btnEmail)
+         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+
+        val savedEmail = sharedPreferences.getString("email","")
+        etEmail.setText(savedEmail)
 
         btnEmail.setOnClickListener {
             sendEmail()
@@ -59,14 +65,17 @@ class EmailFragment : Fragment() {
 
     private fun sendEmail() {
         val email = etEmail.text.toString().trim()
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+
 
         val savedLatitudeString = sharedPreferences.getString("latitude", null)
         val savedLongitudeString = sharedPreferences.getString("longitude", null)
         val savedAddress = sharedPreferences.getString("address", null)
 
         if (isValidEmail(email)) {
-
+            sharedPreferences.edit().apply {
+                putString("email", email)
+                apply()
+            }
 
             val uriText = "mailto:$email" +
                     "?subject=" + "$savedLatitudeString,$savedLongitudeString" +
