@@ -27,12 +27,14 @@ import android.location.Location
 import android.Manifest
 import android.widget.Toast
 import java.io.IOException
-
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 
 class MapsFragment : Fragment() {
 
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var sharedPreferences: SharedPreferences
     private val DEFAULT_ZOOM = 20f
     private val LOCATION_PERMISSION_REQUEST_CODE = 123
 
@@ -42,6 +44,7 @@ class MapsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         return inflater.inflate(R.layout.fragment_maps, container, false)
     }
 
@@ -80,6 +83,8 @@ class MapsFragment : Fragment() {
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
                     val currentLatLng = LatLng(location.latitude, location.longitude)
+                    // Save latitude and longitude in shared preferences
+
                     googleMap.addMarker(
                         MarkerOptions()
                             .position(currentLatLng)
@@ -99,8 +104,16 @@ class MapsFragment : Fragment() {
             val addresses: List<Address> =
                 geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)?.filterNotNull() ?: emptyList()
 
+
             if (addresses.isNotEmpty()) {
                 val address = addresses[0]
+
+                sharedPreferences.edit().apply {
+                    putString("latitude", latLng.latitude.toString())
+                    putString("longitude", latLng.longitude.toString())
+                    putString("address",address.getAddressLine(0).toString())
+                    apply()
+                }
                 return address.getAddressLine(0)
             }
         } catch (e: Exception) {
@@ -108,5 +121,7 @@ class MapsFragment : Fragment() {
         }
         return "Unknown Location Name"
     }
+
+    // Function to retrieve saved latitude and longitude from shared preferences
 
 }
